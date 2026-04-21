@@ -547,7 +547,7 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         autoResize();
         win.on("resize", autoResize);
       });
-    } else void sources.then(sources => {
+    } else sources.then(sources => {
       let allowAudioSharing = false;
       // FIXME: L10N
       if (apiGuard.unixAudioSharing) allowAudioSharing = dialog.showMessageBoxSync(win, {
@@ -559,6 +559,11 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         video: sources[0],
         ...(allowAudioSharing ? { audio: "loopback" } : {})
       }); else callback(null as unknown as Electron.Streams);
+    }).catch((error: unknown) => {
+      if (error === "Failed to get sources.") {
+        console.error("[BUG] On Wayland, getting no sources might cause portal crash in Chrome.");
+        console.error("      You won't be able to screen share until app restart.");
+      } else commonCatches.print(error);
     });
   },{ useSystemPicker: true });
 
