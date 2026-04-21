@@ -8,9 +8,11 @@ let prevDialog:Promise<unknown> = Promise.resolve();
 export const commonCatches = {
   print: (reason:unknown) => {
     if(reason instanceof Error)
-      console.error(reason.message);
+      console.error(`[ERROR/${reason.name}] ${reason.message}`);
+    else if (reason?.constructor === String)
+      console.error(`[ERROR] ${reason as string}`)
     else
-      console.error(reason);
+      console.error(`[ERROR/${reason?.constructor?.name || "N/A"}] %s`,reason);
   },
   throw: (reason:unknown) => {
     if(reason instanceof Error)
