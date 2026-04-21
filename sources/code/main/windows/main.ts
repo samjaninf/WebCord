@@ -506,7 +506,7 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         name: "Entire Screen",
         thumbnail: nativeImage.createEmpty()
       } satisfies Electron.DesktopCapturerSource]);
-    if(lock) {
+    if (lock) {
       const view = new WebContentsView({
         webPreferences: {
           preload: resolve(app.getAppPath(), "app/code/renderer/preload/capturer.js"),
@@ -520,20 +520,20 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         }
       });
       ipcMain.handleOnce("getDesktopCapturerSources", async (event) => {
-        if(event.sender === view.webContents)
+        if (event.sender === view.webContents)
           return await sources;
         else
           return null;
       });
       const autoResize = () => setImmediate(() => view.setBounds({
         ...win.getBounds(),
-        x:0,
-        y:0,
+        x: 0,
+        y: 0,
       }));
       ipcMain.handleOnce("capturer-get-settings", () => {
         return appConfig.value.screenShareStore;
       });
-      ipcMain.once("closeCapturerView", (_event,data:Electron.Streams) => {
+      ipcMain.once("closeCapturerView", (_event, data: Electron.Streams) => {
         win.contentView.removeChildView(view);
         view.webContents.delete();
         win.removeListener("resize", autoResize);
@@ -547,18 +547,19 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         autoResize();
         win.on("resize", autoResize);
       });
-    } else void sources.then(sources => sources[0] ? callback({
-      video: sources[0],
-      // FIXME: Look if there's audio on Wayland.
-      //        Also test this code:
-      // 
-      //...(apiGuard.unixAudioSharing ? {audio:"loopback"} : {})
-      // 
-      // In general, I know there's bug where Electron seem to
-      // trigger Wayland capture, but somewhat cancels it or
-      // stops taking care of its input (crashes?). Need to check
-      // it out further.
-    }) : callback(null as unknown as Electron.Streams));
+    } else void sources.then(sources => {
+      let allowAudioSharing = false;
+      // FIXME: L10N
+      if (apiGuard.unixAudioSharing) allowAudioSharing = dialog.showMessageBoxSync(win, {
+        message: "Do you want to enable audio as well?",
+        title: "Wayland: Audio sharing",
+        buttons: ["yes", "no"]
+      }) == 0;
+      if (sources[0]) callback({
+        video: sources[0],
+        ...(allowAudioSharing ? { audio: "loopback" } : {})
+      }); else callback(null as unknown as Electron.Streams);
+    });
   },{ useSystemPicker: true });
 
   // IPC events validated by secret "API" key and sender frame.
