@@ -186,7 +186,7 @@ export function typeMerge<T extends object>(source: T, config: TypeMergeConfig, 
         if(typeOf(source[key],Object))
           result[key] = deepMerge(source[key], object[key as keyof object]);
         else
-          result[key] = object[key as keyof object] as T[typeof key];
+          result[key] = object[key as keyof object] satisfies T[typeof key];
       });
     return result;
   }

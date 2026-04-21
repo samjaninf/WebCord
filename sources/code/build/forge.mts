@@ -14,15 +14,15 @@ import type { BuildInfo } from "../common/global.js";
 
 // Makers
 
-import { MakerDeb }                      from "@electron-forge/maker-deb";
-import { MakerSnap }                     from "@electron-forge/maker-snap";
-import { MakerFlatpak }                  from "@electron-forge/maker-flatpak";
-import { MakerRpm }                      from "@electron-forge/maker-rpm";
-import { MakerZIP }                      from "@electron-forge/maker-zip";
-import { MakerAppImage }                 from "@reforged/maker-appimage";
-import { MakerDMG, type MakerDMGConfig } from "@electron-forge/maker-dmg";
-import { MakerWix }                      from "@electron-forge/maker-wix";
-import { MakerSquirrel }                 from "@electron-forge/maker-squirrel";
+import { MakerDeb }      from "@electron-forge/maker-deb";
+import { MakerSnap }     from "@electron-forge/maker-snap";
+import { MakerFlatpak }  from "@electron-forge/maker-flatpak";
+import { MakerRpm }      from "@electron-forge/maker-rpm";
+import { MakerZIP }      from "@electron-forge/maker-zip";
+import { MakerAppImage } from "@reforged/maker-appimage";
+import { MakerDMG }      from "@electron-forge/maker-dmg";
+import { MakerWix }      from "@electron-forge/maker-wix";
+import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 
 // Publishers
 
@@ -134,7 +134,7 @@ const config:ForgeConfig = {
       name: `WebCord (${arch})`,
       icon: `${iconFile}.icns`,
       overwrite: true,
-    } satisfies Partial<MakerDMGConfig> as unknown as MakerDMGConfig)),
+    } as const)),
     new MakerAppImage({ options: {
       icon: `${iconFile}.png`,
       genericName: desktopGeneric,

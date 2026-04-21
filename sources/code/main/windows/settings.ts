@@ -18,7 +18,7 @@ type generatedConfig = AppConfig["settings"] & L10N["settings"] & {
 
 function generateConfig () {
   const config = deepmerge(appConfig.value.settings, new L10N().settings);
-  const finalConfig: PartialRecursive<generatedConfig> = config as object;
+  const finalConfig: PartialRecursive<generatedConfig> = config satisfies object;
   const websitesThirdParty = Object.freeze(({
     algolia: "Algolia",
     spotify: "Spotify",

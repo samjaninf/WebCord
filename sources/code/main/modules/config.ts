@@ -105,7 +105,7 @@ const defaultAppConfig = Object.freeze({
         googleStorageApi: true
       },
       currentInstance: {
-        radio: 0 as 0|1
+        radio: 0 as const satisfies 0|1
       },
       devel: {
         enabled: false
