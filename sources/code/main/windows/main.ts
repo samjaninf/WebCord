@@ -555,10 +555,20 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
         video: sources[0],
         ...(allowAudioSharing ? { audio: "loopback" } : {})
       }); else callback(null as unknown as Electron.Streams);
-    }).catch((error: unknown) => {
+    }).catch(async (error: unknown) => {
       if (error === "Failed to get sources.") {
-        console.error("[BUG] On Wayland, getting no sources might cause portal crash in Chrome.");
-        console.error("      You won't be able to screen share until app restart.");
+        let res = await dialog.showMessageBox({
+          title: "Wayland: Caught Electron bug",
+          message: [
+            "Looks like you've canceled the the screen share!",
+            "While this is fine, Electron has a bug that might not",
+            "let you share screen unless Discord will be reloaded.",
+            "Do you want to do this now?"
+          ].join(" "),
+          buttons: [l10nStrings.dialog.common.yes, l10nStrings.dialog.common.no],
+          defaultId: 1
+        });
+        if(res.response == 0) win.reload();
       } else commonCatches.print(error);
     });
   },{ useSystemPicker: true });
