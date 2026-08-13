@@ -36,6 +36,8 @@ function generateConfig () {
     googleStorageApi: "Google Storage API"
   } as const) satisfies cspTP<string>);
   // Append more third-party sites labels.
+  if (finalConfig.advanced?.cspThirdParty && !("labels" in finalConfig.advanced.cspThirdParty))
+    finalConfig.advanced.cspThirdParty.labels = {};
   (Object.entries as <T extends object>(o: T) => [keyof T,T[keyof T]][])(websitesThirdParty)
   .map(stringGroup => {
     if(finalConfig.advanced?.cspThirdParty?.labels && finalConfig.advanced.cspThirdParty.labels[stringGroup[0]] === undefined)

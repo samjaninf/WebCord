@@ -13,7 +13,7 @@ type keys = <T>(o:T) => (keyof T)[];
 //type generatedConfigGenericOld = Record<string,ConfigElement&Partial<Record<"name"|"description",string>&Record<"labels",Record<string,string|undefined>>>>;
 
 type generatedConfigGeneric = {"name":string} & Record<string, Partial<Record<"name"|"description",string>> & (
-  Exclude<configElement, checkListRecord> | (checkListRecord&{"labels": Record<string,string|undefined>;"info"?: Record<string,string>})
+  Exclude<configElement, checkListRecord> | (checkListRecord&{"labels"?: Record<string,string|undefined>;"info"?: Record<string,string>})
 )>;
 
 interface CommonForm {
@@ -143,7 +143,7 @@ function generateSettings(optionsGroups: htmlConfig) {
               type:"checkbox",
               id: groupId+"."+settingKey+"."+key,
               isChecked: setting[key] === true,
-              label: setting.labels[key] ?? "N/A",
+              label: setting.labels?.[key] ?? `unknownKey(${key})`,
               description: setting.info?.[key] ?? undefined
             }))
           );
