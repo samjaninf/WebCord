@@ -88,7 +88,8 @@
                 "message": "Czy chcesz pozwolić Discordowi na dostęp do %s?",
                 "audio": "mikrofonu",
                 "video": "kamery",
-                "notifications": "powiadomień"
+                "notifications": "powiadomień",
+                "systemAudio": "nagrywania audio systemu"
             }
         },
         "mod": {

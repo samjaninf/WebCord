@@ -90,7 +90,8 @@
                 "message": "Do you want to grant Discord an access to the %s?",
                 "video": "camera",
                 "audio": "microphone",
-                "notifications": "notifications"
+                "notifications": "notifications",
+                "systemAudio": "capture system audio"
             }
         },
         "mod": {

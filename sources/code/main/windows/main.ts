@@ -27,6 +27,7 @@ import type { PartialRecursive } from "../../common/global";
 import { nativeImage } from "electron/common";
 import { satisfies as rSatisfies } from "semver";
 import { existsSync } from "fs";
+import { format } from "util"
 
 type MainWindowFlags = [
   startHidden: boolean
@@ -546,9 +547,9 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
       let allowAudioSharing = false;
       // FIXME: L10N
       if (apiGuard.unixAudioSharing) allowAudioSharing = dialog.showMessageBoxSync(win, {
-        message: "Do you want to enable audio as well?",
-        title: "Wayland: Audio sharing",
-        buttons: ["yes", "no"]
+        message: format(l10nStrings.dialog.permission.question.message, l10nStrings.dialog.permission.question.systemAudio),
+        title: "Wayland: "+l10nStrings.dialog.permission.question.title,
+        buttons: [l10nStrings.dialog.common.yes, l10nStrings.dialog.common.no]
       }) == 0;
       if (sources[0]) callback({
         video: sources[0],
