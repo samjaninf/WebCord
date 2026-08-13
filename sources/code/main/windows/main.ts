@@ -549,7 +549,11 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
       if (apiGuard.unixAudioSharing) allowAudioSharing = dialog.showMessageBoxSync(win, {
         message: format(l10nStrings.dialog.permission.question.message, l10nStrings.dialog.permission.question.systemAudio),
         title: "Wayland: "+l10nStrings.dialog.permission.question.title,
-        buttons: [l10nStrings.dialog.common.yes, l10nStrings.dialog.common.no]
+        buttons: [l10nStrings.dialog.common.yes, l10nStrings.dialog.common.no],
+        type: "question",
+        normalizeAccessKeys: true,
+        cancelId: 1,
+        defaultId: 1
       }) == 0;
       if (sources[0]) callback({
         video: sources[0],
@@ -557,7 +561,7 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
       }); else callback(null as unknown as Electron.Streams);
     }).catch(async (error: unknown) => {
       if (error === "Failed to get sources.") {
-        let res = await dialog.showMessageBox({
+        if((await dialog.showMessageBox({
           title: "Wayland: Caught Electron bug",
           message: [
             "Looks like you've canceled the the screen share!",
@@ -566,9 +570,11 @@ export default function createMainWindow(...flags:MainWindowFlags): BrowserWindo
             "Do you want to do this now?"
           ].join(" "),
           buttons: [l10nStrings.dialog.common.yes, l10nStrings.dialog.common.no],
-          defaultId: 1
-        });
-        if(res.response == 0) win.reload();
+          cancelId: 1,
+          defaultId: 0,
+          type: "question",
+          normalizeAccessKeys: true
+        })).response == 0) win.reload();
       } else commonCatches.print(error);
     });
   },{ useSystemPicker: true });
